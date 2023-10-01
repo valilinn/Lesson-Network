@@ -39,10 +39,14 @@ class ViewController: UIViewController {
         
         let post = Post(usetId: 1, title: "myTitle", body: "myBody")
         
-        networkManager.postCreatePost(post) {
+        networkManager.postCreatePost(post) { serverPost in
+            post.id = serverPost.id
             DispatchQueue.main.async {
                 let alert = UIAlertController(title: "Alert!", message: "Created", preferredStyle: .alert)
                 self.present(alert, animated: true)
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+                    alert.dismiss(animated: true)} )
             }
         }
     }

@@ -42,8 +42,10 @@ class NetworkManager {
     }
     
     //POST
-    func postCreatePost(_ post: Post, complitionHandler: @escaping () -> ()) {
-        guard let url = URL(string: baseURL + APIs.posts.rawValue), let data = try? JSONEncoder().encode(post) else { return }
+    func postCreatePost(_ post: Post, complitionHandler: @escaping (Post) -> ()) {
+        let sendData = try? JSONEncoder().encode(post)
+        
+        guard let url = URL(string: baseURL + APIs.posts.rawValue), let data = sendData else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = HTTPMethod.POST.rawValue //enum
@@ -55,10 +57,10 @@ class NetworkManager {
             if error != nil {
                 print("Error")
             } else if let resp = response as? HTTPURLResponse, resp.statusCode == 201, let responseData = data {
-                let json = try? JSONSerialization.jsonObject(with: responseData)
-                print(json)
-                complitionHandler()
+                if let responsePost = try? JSONDecoder().decode(Post.self, from: responseData) {
+                    complitionHandler(responsePost)
+                }
             }
-        }
+        }.resume()
     }
 }

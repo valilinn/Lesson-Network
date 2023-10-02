@@ -63,4 +63,14 @@ class NetworkManager {
             }
         }.resume()
     }
+    
+//query parameters
+    func getPostsBy(userId: Int, complitionHandler: ([Post]) -> ()) {
+        guard let url = URL(string: baseURL + APIs.posts.rawValue) else { return }
+        
+        var components = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        components?.queryItems = [URLQueryItem(name: "userId", value: "\(userId)")] //"\(userId)" int
+        
+        guard let queryURL = components?.url else { return } //will be url with all parameters that we need
+    }
 }
